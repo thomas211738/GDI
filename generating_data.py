@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 import numpy as np
 
 # Configuration
-start_date = datetime(2024, 1, 1)  # Start of Spring semester
-end_date = datetime(2024, 4, 30)   # End of Spring semester
+start_date = datetime(2025, 1, 1)  # Start of Spring semester
+end_date = datetime(2026, 4, 30)   # End of Spring semester
 output_file = 'bu_gym_entries_spring.csv'
 
 # Time slot usage patterns (weekday)
