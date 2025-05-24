@@ -10,15 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@tailwindcss/vite": "^4.1.7",
     "chart.js": "^4.4.9",
     "firebase": "^11.8.0",
+    "lucide-react": "^0.511.0",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
     "react-chartjs-2": "^5.3.0",
     "react-datepicker": "^8.3.0",
     "react-dom": "^19.1.0",
-    "tailwindcss": "^4.1.7"
+    "react-icons": "^5.5.0",
+    "tailwindcss": "^4.1.7",
+    "victory": "^37.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
