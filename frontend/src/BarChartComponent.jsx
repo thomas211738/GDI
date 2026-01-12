@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Users, Clock, Activity, CalendarDays } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Users, Activity, CalendarDays } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import gymData from "@/data/gym_occupancy_2026.json";
@@ -11,7 +11,6 @@ import gymData from "@/data/gym_occupancy_2026.json";
 export default function GymTrafficDashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   
-  // Date boundaries
   const today = new Date();
   const minDate = new Date(today);
   minDate.setDate(minDate.getDate() - 1);
@@ -19,7 +18,6 @@ export default function GymTrafficDashboard() {
   const maxDate = new Date(today);
   maxDate.setMonth(maxDate.getMonth() + 3);
 
-  // Helper to format date as YYYY-MM-DD
   const formatDate = (date) => {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -32,7 +30,6 @@ export default function GymTrafficDashboard() {
     return [year, month, day].join('-');
   };
 
-  // Get data for selected date (for Chart)
   const dateKey = formatDate(selectedDate);
   const dailyData = gymData[dateKey] || new Array(24).fill(0);
 
@@ -85,40 +82,42 @@ export default function GymTrafficDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-          <div className="max-w-6xl mx-auto grid gap-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold">Campus Gym Traffic</h1>
-                <p className="text-gray-500">Plan your workout around crowd density</p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
+      <div className="max-w-6xl mx-auto grid gap-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">BU Fitrec Traffic</h1>
+            <p className="text-sm sm:text-base text-gray-500">Plan your workout around crowd density</p>
+          </div>
+        </div>
+
         {/* Current Status Card */}
         <Card className="rounded-2xl shadow-sm">
           <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Current Capacity</h2>
             </div>
             
             {isClosed ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                   <div className="w-4 h-4 bg-gray-300 rounded-full mb-4" />
-                   <p className="text-4xl font-bold text-gray-400">CLOSED</p>
-                   <p className="text-gray-400 mt-2">The gym is currently closed</p>
-                </div>
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="w-4 h-4 bg-gray-300 rounded-full mb-4" />
+                <p className="text-4xl font-bold text-gray-400">CLOSED</p>
+                <p className="text-gray-400 mt-2">The gym is currently closed</p>
+              </div>
             ) : (
-                <>
+              <>
                 <div className="text-center mb-6">
                   <div className="flex items-center justify-center mb-2">
                     <div className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse" />
                     <p className="text-sm text-red-500 font-semibold">Live Traffic</p>
                   </div>
                   <div className="flex items-center justify-center mb-4">
-                    <Users className="w-12 h-12 mr-4 text-gray-700" />
-                    <p className="text-7xl font-bold text-gray-900">{currentCrowdPercent}%</p>
+                    {/* CHANGE: Adjusted icon/text sizes for mobile */}
+                    <Users className="w-10 h-10 sm:w-12 sm:h-12 mr-4 text-gray-700" />
+                    <p className="text-6xl sm:text-7xl font-bold text-gray-900">{currentCrowdPercent}%</p>
                   </div>
                   <div 
-                    className="inline-block px-6 py-2 rounded-full text-lg font-semibold text-white"
+                    className="inline-block px-6 py-2 rounded-full text-lg font-semibold text-white transition-colors duration-500"
                     style={{ backgroundColor: getGradientColor(currentCrowdPercent) }}
                   >
                     {currentCrowdPercent < 40 ? 'Low' : currentCrowdPercent < 70 ? 'Moderate' : 'High'} Traffic
@@ -130,21 +129,21 @@ export default function GymTrafficDashboard() {
                   <span>Empty</span>
                   <span>Full</span>
                 </div>
-                </>
+              </>
             )}
-            </CardContent>
-          </Card>
+          </CardContent>
+        </Card>
 
-          {/* Traffic Chart */}
+        {/* Traffic Chart */}
                 <Card className="rounded-2xl shadow-sm">
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-center mb-4">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
                   <h2 className="text-xl font-semibold">Crowd Forecast</h2>
                   <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
+                  <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto">
                   <CalendarDays className="w-4 h-4" />
-                  {selectedDate.toLocaleDateString()}
+                  <span className="truncate">{selectedDate.toLocaleDateString()}</span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="end">
@@ -158,11 +157,20 @@ export default function GymTrafficDashboard() {
                 </PopoverContent>
                   </Popover>
                   </div>
-                  <div className="h-72">
+                  <div className="h-64 sm:h-72 -mx-2 sm:mx-0">
                   <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={trafficData}>
-                  <XAxis dataKey="time" />
-                  <YAxis domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
+                <LineChart data={trafficData} margin={{ left: 0, right: 10 }}>
+                  <XAxis 
+                    dataKey="time" 
+                    tick={{ fontSize: 12 }}
+                    interval="preserveStartEnd"
+                  />
+                  <YAxis 
+                    domain={[0, 100]} 
+                    tickFormatter={(value) => `${value}%`}
+                    tick={{ fontSize: 12 }}
+                    width={40}
+                  />
                   <Tooltip formatter={(value) => [`${value}%`, "Capacity"]} />
                   <Line type="monotone" dataKey="capacity" strokeWidth={3} />
                 </LineChart>
@@ -171,7 +179,7 @@ export default function GymTrafficDashboard() {
                 </CardContent>
                 </Card>
 
-                {/* Pro Tips */}
+        {/* Pro Tips */}
         <Card className="rounded-2xl shadow-sm">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold mb-3 flex items-center">
