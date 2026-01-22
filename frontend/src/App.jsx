@@ -1,10 +1,11 @@
 import React from 'react'
-import BarChartComponent from './BarChartComponent';
+import GymTrafficDashboard from './GymTrafficDashBaord';
+
 
 export default function App() {
   return (
     <div >
-      <BarChartComponent />
+      <GymTrafficDashboard />
     </div>
   )
 }
