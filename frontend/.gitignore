@@ -1,5 +1,6 @@
 
 .env
+/src/data/gym_occupancy_2026.json
 # Logs
 logs
 *.log
