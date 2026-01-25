@@ -9,12 +9,10 @@ import {
   DropdownMenuLabel, 
   DropdownMenuSeparator, 
   DropdownMenuTrigger,
-  DropdownMenuSub,           // Optional: for cleaner UI if supported by your UI lib
-  DropdownMenuSubTrigger,    // Optional
-  DropdownMenuSubContent     // Optional
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { LogOut, BookOpen, ChevronDown, Sun, Moon, Laptop } from "lucide-react"; // <--- Import Icons
+import { LogOut, BookOpen, ChevronDown, Sun, Moon, Laptop, Home } from "lucide-react"; // <--- Import Icons
+import { Link } from "react-router-dom";
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -81,9 +79,18 @@ export function Header() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="dark:bg-gray-800" />
             
-            <DropdownMenuItem onClick={() => alert("Open Methodology Modal")} className="cursor-pointer dark:text-gray-200 dark:focus:bg-gray-800">
-              <BookOpen className="mr-2 h-4 w-4" />
-              <span>Methodology</span>
+            <DropdownMenuItem className="cursor-pointer dark:text-gray-200 dark:focus:bg-gray-800">
+              <Link to="/" className="flex items-center w-full">
+                <Home className="mr-2 h-4 w-4" />
+                <span>Home</span>
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className="cursor-pointer dark:text-gray-200 dark:focus:bg-gray-800">
+              <Link to="/methodology" className="flex items-center w-full">
+                <BookOpen className="mr-2 h-4 w-4" />
+                <span>Methodology</span>
+              </Link>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator className="dark:bg-gray-800" />

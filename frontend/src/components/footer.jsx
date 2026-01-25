@@ -1,4 +1,5 @@
 import { Github, Linkedin, Mail, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Footer() {
     return (
@@ -30,12 +31,18 @@ export function Footer() {
                         <h3 className="font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Resources</h3>
                         {/* Removed 'md:text-left' so text stays centered */}
                         <div className="flex flex-col gap-3 text-center">
-                            <button 
-                                onClick={() => alert("Open Methodology Modal")} 
-                                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 hover:dark:text-blue-400 hover:underline text-sm transition-colors flex items-center justify-center gap-2"
-                            >
+                            <Link 
+                                to="/"
+                                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 hover:underline text-sm transition-colors flex items-center justify-center gap-2"
+                                >
+                                Home
+                            </Link>
+                            <Link 
+                                to="/methodology"
+                                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 hover:underline text-sm transition-colors flex items-center justify-center gap-2"
+                                >
                                 Methodology
-                            </button>
+                            </Link>
                             
                             <a 
                                 href="https://github.com/thomas211738/GDI" 
