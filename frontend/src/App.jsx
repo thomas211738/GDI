@@ -1,11 +1,14 @@
-import React from 'react'
-import GymTrafficDashboard from './GymTrafficDashBaord';
 
+import GymTrafficDashBoard from "./GymTrafficDashBaord"; // Or whatever your main component is
+import { ThemeProvider } from "@/components/ThemeProvider"; // Import the fixed provider
 
-export default function App() {
+function App() {
   return (
-    <div >
-      <GymTrafficDashboard />
-    </div>
-  )
+    // Wrap everything in ThemeProvider
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <GymTrafficDashBoard />
+    </ThemeProvider>
+  );
 }
+
+export default App;

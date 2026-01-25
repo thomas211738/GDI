@@ -1,18 +1,24 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/firebase";
+import { useTheme } from "@/components/ThemeProvider"; // <--- Import Hook
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuLabel, 
   DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSub,           // Optional: for cleaner UI if supported by your UI lib
+  DropdownMenuSubTrigger,    // Optional
+  DropdownMenuSubContent     // Optional
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { LogOut, BookOpen, ChevronDown } from "lucide-react";
+import { LogOut, BookOpen, ChevronDown, Sun, Moon, Laptop } from "lucide-react"; // <--- Import Icons
 
 export function Header() {
   const { user, logout } = useAuth();
+  const { setTheme } = useTheme(); // <--- Get setter
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
@@ -26,23 +32,21 @@ export function Header() {
 
   return (
     <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-      {/* Left Side: Title */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+        {/* Added dark:text-white */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
           BU Fitrec Traffic
         </h1>
-        <p className="text-sm sm:text-base text-gray-500 mt-1">
+        {/* Added dark:text-gray-400 */}
+        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
           Plan your workout around crowd density
         </p>
       </div>
 
-      {/* Right Side: User Dropdown (Only if logged in) */}
       {user && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-10 w-auto rounded-full p-1 pr-3 hover:bg-gray-100 flex items-center gap-2 border border-transparent hover:border-gray-200 transition-all">
-              
-              {/* Avatar Circle */}
+            <Button variant="ghost" className="relative h-10 w-auto rounded-full p-1 pr-3 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 border border-transparent hover:border-gray-200 transition-all">
               <div className="relative w-8 h-8 shrink-0">
                 {!imageError && user.photoURL ? (
                   <img
@@ -59,39 +63,57 @@ export function Header() {
                   </div>
                 )}
               </div>
-
-              {/* Name & Arrow */}
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                 {user.displayName ? user.displayName.split(" ")[0] : "Account"}
               </span>
               <ChevronDown className="w-4 h-4 text-gray-400" />
-            
             </Button>
           </DropdownMenuTrigger>
           
-          <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuContent className="w-56 dark:bg-gray-900 dark:border-gray-800" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user.displayName}</p>
-                <p className="text-xs leading-none text-muted-foreground">
+                <p className="text-sm font-medium leading-none dark:text-white">{user.displayName}</p>
+                <p className="text-xs leading-none text-muted-foreground dark:text-gray-400">
                   {user.email}
                 </p>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="dark:bg-gray-800" />
             
-            {/* 1. Methodology Item */}
-            <DropdownMenuItem onClick={() => alert("Open Methodology Modal here!")} className="cursor-pointer">
+            <DropdownMenuItem onClick={() => alert("Open Methodology Modal")} className="cursor-pointer dark:text-gray-200 dark:focus:bg-gray-800">
               <BookOpen className="mr-2 h-4 w-4" />
               <span>Methodology</span>
             </DropdownMenuItem>
+
+            <DropdownMenuSeparator className="dark:bg-gray-800" />
             
-            <DropdownMenuSeparator />
+            {/* --- NEW THEME SECTION --- */}
+            <DropdownMenuLabel className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-2">
+              Theme
+            </DropdownMenuLabel>
             
-            {/* 2. Sign Out Item (Red) */}
+            <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer dark:text-gray-200 dark:focus:bg-gray-800">
+              <Sun className="mr-2 h-4 w-4" />
+              <span>Light</span>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer dark:text-gray-200 dark:focus:bg-gray-800">
+              <Moon className="mr-2 h-4 w-4" />
+              <span>Dark</span>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer dark:text-gray-200 dark:focus:bg-gray-800">
+              <Laptop className="mr-2 h-4 w-4" />
+              <span>System</span>
+            </DropdownMenuItem>
+            {/* ------------------------- */}
+            
+            <DropdownMenuSeparator className="dark:bg-gray-800" />
+            
             <DropdownMenuItem 
               onClick={logout} 
-              className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
+              className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/20 cursor-pointer"
             >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Sign out</span>

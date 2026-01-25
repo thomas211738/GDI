@@ -21,7 +21,8 @@ export default function GymTrafficDashboard() {
   } = useGymTraffic();
 
   return (
-   <div className="min-h-screen bg-gray-50 flex flex-col">
+   // Change bg-gray-50 to support dark mode
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
     
     {/* Main Content Wrapper (Grows to push footer down) */}
     <div className="flex-grow p-4 sm:p-8">
