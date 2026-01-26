@@ -17,7 +17,6 @@
     "@radix-ui/react-progress": "^1.1.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
-    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.7",
     "chart.js": "^4.4.9",
     "class-variance-authority": "^0.7.1",
@@ -35,12 +34,14 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.13.0",
     "recharts": "^3.6.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.7",
     "victory": "^37.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^25.0.6",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

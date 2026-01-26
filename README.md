@@ -8,24 +8,23 @@ Get live crowd traffic at Fitrec, and see future predicted crowd traffic up to 3
 
 ## Inspiration
 
-BU's gym traffic can be highly variable and difficult to predict. Students often encounter:
+1) BU's gym traffic can be highly variable and difficult to predict. Students often encounter:
 
 - Long equipment wait times  
 - Gym anxiety from overcrowding  
 - Wasted trips to a full facility  
 
-### The Motivation
 
-Existing tools lack granularity and fail to account for academic context such as **Finals Week vs. Spring Break**.
+2) <span style="color:blue; text-decoration:underline;">[Existing tools](https://www.bu.edu/fitrec/peak-quiet-hours/) lack granularity and can be difficult to understand.</span>
 
-**Core Engineering Constraint:**  
-The raw dataset contained **only entry timestamps (swipe-ins)** with **no exit data**, making direct occupancy calculation impossible.
+Peek-Quiet Hours by Fitrec as of Jan 26, 2026
+![FitRec Peak Hours Chart](./frontend/ReadMe_Pics/Existing%20Tools%20Pic.png)
 
 ---
 
 ## Solution
 
-An end-to-end predictive system was built to **reconstruct missing data** and forecast future traffic.
+I got raw Fitrec Swipe in data, and used that to make a model to predict future traffic.
 
 ### Key Features
 
@@ -36,73 +35,38 @@ An end-to-end predictive system was built to **reconstruct missing data** and fo
   A **Random Forest Regressor** learns non-linear relationships between time, date, and crowd density.
 
 - **Schedule Logic Integration**  
-  Academic calendar parsing automatically adjusts predictions for holidays, intersessions, and closures (e.g. enforcing 0 occupancy on Thanksgiving).
+  Academic calendar parsing automatically adjusts predictions for holidays, intersessions, and closures (e.g. enforcing 0 occupancy on days like Thanksgiving).
 
 **Why it works:**  
-The model understands context—not just averages. A holiday Monday behaves like a Sunday, and 5 PM in July is fundamentally different from 5 PM in January.
+The model understands context, not just averages. For example, 5 PM in July is fundamentally different from 5 PM in January.
 
 ---
 
-## Architecture & Workflow
+## Main Insights
 
-The system follows a **four-stage data pipeline**, from raw logs to actionable forecasts.
+From my data exploration, these are the 3 main insights I found. 
 
-### 1. Data Ingestion & Simulation
+### 1. Time of Day: The "Two-Peak" Pattern
+Gym traffic follows a predictable daily rhythm with two major spikes.
+![FitRec Peak Hours Chart](./frontend/ReadMe_Pics/Hours%20Trend.png)
+- **Morning (7:00 AM - 9:00 AM):** A sharp increase as the gym opens and people work out before class/work.
+- **After Class Surge (5:00 PM - 7:00 PM):** The busiest time of the day, when the gym hits maximum capacity.
+- **Quiet Afternoons (12:00 PM - 2:00 PM):** A moderate dip, making it a decent time to go.
 
-- **Input:**  
-  Raw CSV logs (800k+ rows) of anonymized swipe-ins
-- **Process:**  
-  Exit times are simulated using a **Truncated Normal Distribution**  
-  - Mean: 67.5 minutes  
-  - Range: 20–180 minutes
-- **Output:**  
-  Reconstructed timeline of *virtual occupancy*
+### 2. Day of Week: The "Resolution" Curve
+Traffic is highest at the start of the week and steadily declines.
+![FitRec Peak Week Chart](./frontend/ReadMe_Pics/Weeks%20Trend.png)
+- **Mondays & Tuesdays:** The busiest days as motivation is high.
+- **Fridays:** Significantly quieter as the weekend approaches.
+- **Weekends:** The lowest traffic of the week. Sundays are slightly busier than Saturdays, often picking up in the evening.
 
----
-
-### 2. Feature Engineering
-
-The reconstructed timeline is transformed into a training dataset with features including:
-
-- `Hour_of_Day`
-- `Day_of_Week`
-- `Month` (seasonality)
-- `Is_Holiday` (derived from academic calendar)
-
----
-
-### 3. Model Training
-
-A **Random Forest Regressor** (`n_estimators = 100`) is trained on the reconstructed history.
-
-**Why Random Forest?**
-
-- Handles non-linear relationships
-- Captures feature interactions (e.g. *Monday + Semester Break*)
-- Robust to noise from simulated data
-
----
-
-### 4. Forecasting & Rules Layer
-
-- The model generates predictions for **every hour of 2026**
-- A deterministic **rules layer** enforces facility constraints from the official schedule PDF:
-  - Closed → occupancy forced to `0`
-  - Reduced hours → truncated predictions
-
----
-
-## Tech Stack
-
-| Domain | Technology | Purpose |
-|-----|-----|-----|
-| Language | Python 3.9 | Core logic |
-| Data Processing | Pandas, NumPy | Time-series manipulation |
-| Machine Learning | Scikit-Learn | Random Forest regression |
-| Statistics | SciPy | Truncated normal distribution |
-| Visualization | Matplotlib | Validation charts & heatmaps |
-
----
+### 3. Month of Year: Academic Seasonality
+As a university gym, traffic is dictated by the academic calendar.
+![FitRec Peak Months Chart](./frontend/ReadMe_Pics/Months%20Trend.png)
+- **January & February:** Peak season due to "New Year's Resolutions" and the start of the semester.
+- **May - August:** A massive drop-off during Summer Break.
+- **September:** A sharp resurgence as students return for the Fall semester.
+- **December:** A sudden drop during Finals Week and Winter Break.
 
 ## Results
 
@@ -117,40 +81,13 @@ The model produces a **365-day smart calendar** for gym-goers.
 
 ---
 
-### Visual Insights
-
-**Daily Traffic Profile**
-- Captures both the **morning rush (7 AM)** and **after-work peak (5–7 PM)**
-
-**Sample Week (Nov 4–10)**
-- Clearly shows weekly cyclicality and weekend drops
-
----
-
-### Final Output
-
-The system outputs a `gym_occupancy_2026.csv` file with actionable hourly metrics:
-
-| Date | Day | Hour | Est. People | Capacity % | Daily Peak |
-|-----|-----|-----|-----|-----|-----|
-| 2026-01-20 | Tuesday | 5 PM | **385** | **85.5%** | **5 PM** |
-| 2026-01-20 | Tuesday | 9 PM | **150** | **33.3%** | 5 PM |
-| 2026-07-04 | Saturday | 2 PM | **0** | **0.0%** | CLOSED |
-
----
-
 ## Future Improvements
 
-- **Weather Integration**  
-  Correlate rain/snow with gym usage via weather APIs
-- **Web Interface**  
-  Deploy predictions to a React / Next.js dashboard
-- **Real-Time Adjustment**  
-  Introduce a feedback loop using live swipe data
-
----
+1. **Weather Integration**  
+    Correlate rain/snow with gym usage via weather APIs
+2. **Real-Time Adjustment**  
+    Introduce a feedback loop using live swipe data
 
 ## Author
-
 **Thomas Yousef**
 
