@@ -9,7 +9,7 @@ export function Footer() {
                 
                 {/* Top Centered Line */}
                 <div className="text-center mb-10 text-sm text-gray-500 dark:text-gray-400">
-                    Developed and maintained by <span className="font-semibold text-gray-900 dark:text-white">Thomas Yousef</span>  --  v1.0.1
+                    Developed and maintained by <span className="font-semibold text-gray-900 dark:text-white">Thomas Yousef</span>  --  v1.1.1
                 </div>
 
                 {/* 3-Column Grid */}

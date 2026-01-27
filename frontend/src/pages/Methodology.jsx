@@ -73,7 +73,7 @@ export default function Methodology() {
                                 <div className="flex flex-col items-center">
                                     <div className="bg-gray-50 dark:bg-gray-950 p-3 rounded-xl border border-gray-200 dark:border-gray-800">
                                         <img
-                                            src="././ReadMe_Pics/Existing%20Tools%20Pic.png"
+                                            src="/ReadMe_Pics/Existing%20Tools%20Pic.png"
                                             alt="FitRec Peak Hours Chart"
                                             className="rounded-lg max-h-64 object-contain"
                                         />
@@ -130,7 +130,7 @@ export default function Methodology() {
                                 <div className="flex flex-col md:flex-row gap-8 items-start">
                                     <div className="md:w-1/2 flex justify-center bg-gray-50 dark:bg-gray-950 p-4 rounded-xl border">
                                         <img
-                                            src="././ReadMe_Pics/Hours%20Trend.png"
+                                            src="/ReadMe_Pics/Hours%20Trend.png"
                                             alt="Daily Trend"
                                             className="rounded-lg max-h-60 object-contain"
                                         />
@@ -189,7 +189,7 @@ export default function Methodology() {
 
                                     <div className="md:w-1/2 flex justify-center bg-gray-50 dark:bg-gray-950 p-4 rounded-xl border">
                                         <img
-                                            src="././ReadMe_Pics/Weeks%20Trend.png"
+                                            src="/ReadMe_Pics/Weeks%20Trend.png"
                                             alt="Weekly Trend"
                                             className="rounded-lg max-h-60 object-contain"
                                         />
@@ -200,7 +200,7 @@ export default function Methodology() {
                                 <div className="flex flex-col md:flex-row gap-8 items-start">
                                     <div className="md:w-1/2 flex justify-center bg-gray-50 dark:bg-gray-950 p-4 rounded-xl border">
                                         <img
-                                            src="././ReadMe_Pics/Months%20Trend.png"
+                                            src="/ReadMe_Pics/Months%20Trend.png"
                                             alt="Monthly Trend"
                                             className="rounded-lg max-h-60 object-contain"
                                         />
