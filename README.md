@@ -18,7 +18,7 @@ Get live crowd traffic at Fitrec, and see future predicted crowd traffic up to 3
 2) <span style="color:blue; text-decoration:underline;">[Existing tools](https://www.bu.edu/fitrec/peak-quiet-hours/) lack granularity and can be difficult to understand.</span>
 
 Peek-Quiet Hours by Fitrec as of Jan 26, 2026
-![FitRec Peak Hours Chart](./frontend/ReadMe_Pics/Existing%20Tools%20Pic.png)
+![FitRec Peak Hours Chart](./frontend/public/ReadMe_Pics/Existing%20Tools%20Pic.png)
 
 ---
 
@@ -48,21 +48,21 @@ From my data exploration, these are the 3 main insights I found.
 
 ### 1. Time of Day: The "Two-Peak" Pattern
 Gym traffic follows a predictable daily rhythm with two major spikes.
-![FitRec Peak Hours Chart](./frontend/ReadMe_Pics/Hours%20Trend.png)
+![FitRec Peak Hours Chart](./frontend/public/ReadMe_Pics/Hours%20Trend.png)
 - **Morning (7:00 AM - 9:00 AM):** A sharp increase as the gym opens and people work out before class/work.
 - **After Class Surge (5:00 PM - 7:00 PM):** The busiest time of the day, when the gym hits maximum capacity.
 - **Quiet Afternoons (12:00 PM - 2:00 PM):** A moderate dip, making it a decent time to go.
 
 ### 2. Day of Week: The "Resolution" Curve
 Traffic is highest at the start of the week and steadily declines.
-![FitRec Peak Week Chart](./frontend/ReadMe_Pics/Weeks%20Trend.png)
+![FitRec Peak Week Chart](./frontend/public/ReadMe_Pics/Weeks%20Trend.png)
 - **Mondays & Tuesdays:** The busiest days as motivation is high.
 - **Fridays:** Significantly quieter as the weekend approaches.
 - **Weekends:** The lowest traffic of the week. Sundays are slightly busier than Saturdays, often picking up in the evening.
 
 ### 3. Month of Year: Academic Seasonality
 As a university gym, traffic is dictated by the academic calendar.
-![FitRec Peak Months Chart](./frontend/ReadMe_Pics/Months%20Trend.png)
+![FitRec Peak Months Chart](./frontend/public/ReadMe_Pics/Months%20Trend.png)
 - **January & February:** Peak season due to "New Year's Resolutions" and the start of the semester.
 - **May - August:** A massive drop-off during Summer Break.
 - **September:** A sharp resurgence as students return for the Fall semester.
