@@ -1,7 +1,7 @@
 
-import { useState, useEffect } from "react"; 
 import { useAuth } from "@/lib/firebase.js";
 import { useGymTraffic } from "@/hooks/useGymTraffic";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { CurrentStatusCard } from "@/components/CurrentStatusCard";
 import { TrafficChart } from "@/components/TrafficChart";
 import { ProTipsCard } from "@/components/ProTipsCard";
@@ -10,15 +10,19 @@ import { Footer } from "@/components/footer.jsx";
 
 export default function GymTrafficDashboard() {
   const { user, login, logout } = useAuth();
-  
-  const { 
-    selectedDate, 
-    setSelectedDate, 
-    trafficData, 
-    currentStatus, 
-    minDate, 
-    maxDate 
-  } = useGymTraffic();
+  const { trustScore } = useUserProfile(user);
+
+  const {
+    selectedDate,
+    setSelectedDate,
+    trafficData,
+    currentStatus,
+    correction,
+    submitCorrection,
+    minDate,
+    maxDate,
+    loading,
+  } = useGymTraffic({ user, trustScore });
 
   return (
    // Change bg-gray-50 to support dark mode
@@ -31,19 +35,26 @@ export default function GymTrafficDashboard() {
         
         <Header />
 
-        <CurrentStatusCard 
-          percent={currentStatus.percent} 
-          isClosed={currentStatus.isClosed} 
+        <CurrentStatusCard
+          percent={currentStatus.percent}
+          isClosed={currentStatus.isClosed}
+          correction={correction}
+          onSubmitCorrection={submitCorrection}
+          loading={loading}
+          isLoggedIn={!!user}
+          onLogin={login}
+          trustScore={trustScore}
         />
 
-        <TrafficChart 
+        <TrafficChart
           data={trafficData}
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
           minDate={minDate}
           maxDate={maxDate}
-          isLoggedIn={!!user} 
+          isLoggedIn={!!user}
           onLogin={login}
+          loading={loading}
         />
 
         <ProTipsCard />

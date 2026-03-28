@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Gym predictions: public read, no client writes
+    match /gym_occupancy/{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // User profiles: each user can only read/write their own
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid', 'totalReports', 'confirmedReports', 'deniedReports'])
+        && request.resource.data.totalReports == 0
+        && request.resource.data.confirmedReports == 0
+        && request.resource.data.deniedReports == 0;
+
+      // Counts can only go up, capped at 10 per write, and confirmed+denied can't exceed total
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.keys().hasOnly(['uid', 'totalReports', 'confirmedReports', 'deniedReports'])
+        && request.resource.data.totalReports >= resource.data.totalReports
+        && request.resource.data.confirmedReports >= resource.data.confirmedReports
+        && request.resource.data.deniedReports >= resource.data.deniedReports
+        && (request.resource.data.confirmedReports - resource.data.confirmedReports) <= 10
+        && (request.resource.data.deniedReports - resource.data.deniedReports) <= 10
+        && request.resource.data.confirmedReports + request.resource.data.deniedReports
+           <= request.resource.data.totalReports;
+    }
+
+    // Report history: private to each user; evaluated can never go back to false
+    match /user_report_history/{uid}/reports/{correctionKey} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid;
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && !(resource.data.evaluated == true && request.resource.data.evaluated == false);
+      // No delete allowed
+    }
+
+    // Community corrections: publicly readable, auth required to write
+    match /gym_corrections/{correctionKey} {
+      allow read: if true;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['reports', 'lastUpdatedAt'])
+        && request.resource.data.reports.keys().hasOnly([request.auth.uid])
+        && request.resource.data.reports[request.auth.uid].value >= 0
+        && request.resource.data.reports[request.auth.uid].value <= 100
+        && request.resource.data.reports[request.auth.uid].weight >= 0
+        && request.resource.data.reports[request.auth.uid].weight <= 1.0;
+
+      // updateDoc with dot notation (reports.uid) only touches the user's own entry
+      allow update: if request.auth != null
+        && request.resource.data.reports[request.auth.uid].value >= 0
+        && request.resource.data.reports[request.auth.uid].value <= 100
+        && request.resource.data.reports[request.auth.uid].weight >= 0
+        && request.resource.data.reports[request.auth.uid].weight <= 1.0;
+    }
+  }
+}

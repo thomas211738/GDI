@@ -31,14 +31,15 @@ function GoogleIcon() {
   );
 }
 
-export function TrafficChart({ 
-  data, 
-  selectedDate, 
-  onDateChange, 
-  minDate, 
-  maxDate, 
+export function TrafficChart({
+  data,
+  selectedDate,
+  onDateChange,
+  minDate,
+  maxDate,
   isLoggedIn,
-  onLogin 
+  onLogin,
+  loading,
 }) {
   return (
     <Card className="rounded-2xl shadow-sm overflow-hidden relative dark:bg-gray-900 dark:border-gray-800">
@@ -46,6 +47,17 @@ export function TrafficChart({
         
         {/* Blur Wrapper */}
         <div className={!isLoggedIn ? "blur-md pointer-events-none select-none filter transition-all duration-500" : ""}>
+          {loading && (
+            <div className="h-64 sm:h-72 flex flex-col gap-3 animate-pulse justify-end pb-4">
+              {[60, 80, 45, 90, 55, 70, 40, 85, 65, 50].map((h, i) => (
+                <div
+                  key={i}
+                  className="bg-gray-200 dark:bg-gray-700 rounded"
+                  style={{ height: `${h}%`, flex: "1" }}
+                />
+              ))}
+            </div>
+          )}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
               <div>
                 <h2 className="text-xl font-semibold dark:text-white">Crowd Forecast</h2>
@@ -71,19 +83,18 @@ export function TrafficChart({
               </Popover>
             </div>
 
-            <div className="h-64 sm:h-72 -mx-2 sm:mx-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data} margin={{ left: 0, right: 10 }}>
-                  <XAxis dataKey="time" tick={{ fontSize: 12 }} interval="preserveStartEnd" stroke="#888888" />
-                  <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 12 }} width={40} stroke="#888888" />
-                  
-                  {/* 2. Use CustomTooltip here */}
-                  <Tooltip content={<CustomTooltip />} />
-                  
-                  <Line type="monotone" dataKey="capacity" strokeWidth={3} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            {!loading && (
+              <div className="h-64 sm:h-72 -mx-2 sm:mx-0">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={data} margin={{ left: 0, right: 10 }}>
+                    <XAxis dataKey="time" tick={{ fontSize: 12 }} interval="preserveStartEnd" stroke="#888888" />
+                    <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 12 }} width={40} stroke="#888888" />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Line type="monotone" dataKey="capacity" strokeWidth={3} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
         </div>
 
         {/* Locked Overlay - UPDATED FOR DARK MODE */}
