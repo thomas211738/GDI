@@ -31,7 +31,8 @@ export function parseSlotTime(correctionKey) {
 
 /**
  * Computes weighted average from a reports map { uid: { value, weight } }.
- * Returns null if no reports.
+ * Values are categorical: -2 (much less), -1 (less), 1 (more), 2 (much more).
+ * Returns a number in [-2, 2], or null if no reports.
  */
 export function weightedAverage(reports) {
   if (!reports || Object.keys(reports).length === 0) return null;
@@ -41,5 +42,17 @@ export function weightedAverage(reports) {
     weightedSum += report.value * report.weight;
     totalWeight += report.weight;
   }
-  return totalWeight > 0 ? Math.round(weightedSum / totalWeight) : null;
+  return totalWeight > 0 ? weightedSum / totalWeight : null;
+}
+
+/**
+ * Converts a weighted average score to a human-readable correction label.
+ * Score is in [-2, 2].
+ */
+export function correctionLabel(score) {
+  if (score === null) return null;
+  if (score <= -1.5) return "Much less busy than predicted";
+  if (score < 0) return "Less busy than predicted";
+  if (score < 1.5) return "More busy than predicted";
+  return "Much more busy than predicted";
 }

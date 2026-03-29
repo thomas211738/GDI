@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc, updateDoc, increment, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { computeTrustScore, parseSlotTime, CONFIRM_THRESHOLD } from "@/lib/trust";
+import { computeTrustScore, parseSlotTime, weightedAverage } from "@/lib/trust";
 
 /**
  * Manages the user's profile document in Firestore.
@@ -70,11 +70,14 @@ async function evaluatePendingReports(uid, userRef, currentUserDoc, setUserDoc) 
     const correctionSnap = await getDoc(doc(db, "gym_corrections", correctionKey));
     if (!correctionSnap.exists()) continue;
 
-    const { weightedSum, totalWeight, reportCount } = correctionSnap.data();
-    if (!reportCount || reportCount < 2) continue; // need at least 2 reports
+    const reports = correctionSnap.data().reports;
+    if (!reports || Object.keys(reports).length < 2) continue; // need at least 2 reports
 
-    const communityAvg = weightedSum / totalWeight;
-    const isConfirmed = Math.abs(value - communityAvg) <= CONFIRM_THRESHOLD;
+    const communityAvg = weightedAverage(reports);
+    if (communityAvg === null) continue;
+
+    // Confirmed if user's direction (less/more) matches community consensus
+    const isConfirmed = Math.sign(value) === Math.sign(communityAvg);
 
     if (isConfirmed) confirmedDelta++;
     else deniedDelta++;

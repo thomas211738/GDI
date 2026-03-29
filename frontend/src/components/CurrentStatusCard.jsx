@@ -1,13 +1,37 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Users } from "lucide-react";
+import { Users, User } from "lucide-react";
 import { getGradientColor } from "@/utils/colors";
+import { correctionLabel } from "@/lib/trust";
+
+const REPORT_OPTIONS = [
+  {
+    value: -2, count: 1, label: "Much less",
+    color: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-100 dark:bg-emerald-900/50 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 dark:hover:bg-emerald-800/60 hover:border-emerald-500",
+  },
+  {
+    value: -1, count: 2, label: "Less",
+    color: "text-lime-600 dark:text-lime-400",
+    bg: "bg-lime-100 dark:bg-lime-900/50 border-lime-300 dark:border-lime-700 hover:bg-lime-200 dark:hover:bg-lime-800/60 hover:border-lime-500",
+  },
+  {
+    value: 1, count: 3, label: "More",
+    color: "text-orange-600 dark:text-orange-400",
+    bg: "bg-orange-100 dark:bg-orange-900/50 border-orange-300 dark:border-orange-700 hover:bg-orange-200 dark:hover:bg-orange-800/60 hover:border-orange-500",
+  },
+  {
+    value: 2, count: 4, label: "Much more",
+    color: "text-red-600 dark:text-red-400",
+    bg: "bg-red-100 dark:bg-red-900/50 border-red-300 dark:border-red-700 hover:bg-red-200 dark:hover:bg-red-800/60 hover:border-red-500",
+  },
+];
 
 export function CurrentStatusCard({ percent, isClosed, correction, onSubmitCorrection, loading, isLoggedIn, onLogin, trustScore }) {
   const [displayPercent, setDisplayPercent] = useState(0);
   const [showReportForm, setShowReportForm] = useState(false);
-  const [reportValue, setReportValue] = useState(50);
+  const [reportValue, setReportValue] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
@@ -32,10 +56,11 @@ export function CurrentStatusCard({ percent, isClosed, correction, onSubmitCorre
   const animatedValue = Math.round(displayPercent);
   const trafficLabel = animatedValue < 40 ? 'Low' : animatedValue < 70 ? 'Moderate' : 'High';
 
-  const handleSubmit = async () => {
-    await onSubmitCorrection(reportValue);
+  const handleSubmit = async (value) => {
+    await onSubmitCorrection(value);
     setSubmitted(true);
     setShowReportForm(false);
+    setReportValue(null);
   };
 
   return (
@@ -88,7 +113,7 @@ export function CurrentStatusCard({ percent, isClosed, correction, onSubmitCorre
 
             {correction !== null && (
               <p className="text-sm text-center text-blue-500 dark:text-blue-400 mt-3">
-                Community reports: <strong>{correction}%</strong>
+                Community reports: <strong>{correctionLabel(correction)}</strong>
               </p>
             )}
 
@@ -105,35 +130,38 @@ export function CurrentStatusCard({ percent, isClosed, correction, onSubmitCorre
                   onClick={() => { setShowReportForm(true); setSubmitted(false); }}
                   className="w-full text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline"
                 >
-                  {submitted ? "Thanks for reporting!" : "Is this wrong? Report actual traffic"}
+                  {submitted ? "Thanks for reporting!" : "Traffic doesn't feel right?"}
                 </button>
               ) : (
                 <div className="mt-2">
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 text-center">
-                    What's the actual capacity? <strong>{reportValue}%</strong>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 text-center">
+                    How busy is it compared to the prediction?
                   </p>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={reportValue}
-                    onChange={(e) => setReportValue(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <div className="flex gap-2 mt-3">
-                    <button
-                      onClick={handleSubmit}
-                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm py-1.5 rounded-lg"
-                    >
-                      Submit
-                    </button>
-                    <button
-                      onClick={() => setShowReportForm(false)}
-                      className="flex-1 text-sm text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 py-1.5 rounded-lg"
-                    >
-                      Cancel
-                    </button>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mb-3 text-center">
+                    Your reports help improve future predictions.
+                  </p>
+                  <div className="grid grid-cols-4 gap-2">
+                    {REPORT_OPTIONS.map(({ value, count, label, color, bg }) => (
+                      <button
+                        key={value}
+                        onClick={() => handleSubmit(value)}
+                        className={`flex flex-col items-center gap-1 py-3 rounded-xl border transition-colors ${bg}`}
+                      >
+                        <div className="flex -space-x-2 h-6 items-center justify-center">
+                          {Array.from({ length: count }).map((_, i) => (
+                            <User key={i} className={`w-4 h-4 ${color}`} />
+                          ))}
+                        </div>
+                        <span className={`text-xs font-medium ${color}`}>{label}</span>
+                      </button>
+                    ))}
                   </div>
+                  <button
+                    onClick={() => setShowReportForm(false)}
+                    className="w-full mt-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    Cancel
+                  </button>
                 </div>
               )}
             </div>

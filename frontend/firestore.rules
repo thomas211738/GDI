@@ -50,15 +50,13 @@ service cloud.firestore {
       allow create: if request.auth != null
         && request.resource.data.keys().hasOnly(['reports', 'lastUpdatedAt'])
         && request.resource.data.reports.keys().hasOnly([request.auth.uid])
-        && request.resource.data.reports[request.auth.uid].value >= 0
-        && request.resource.data.reports[request.auth.uid].value <= 100
+        && request.resource.data.reports[request.auth.uid].value in [-2, -1, 1, 2]
         && request.resource.data.reports[request.auth.uid].weight >= 0
         && request.resource.data.reports[request.auth.uid].weight <= 1.0;
 
       // updateDoc with dot notation (reports.uid) only touches the user's own entry
       allow update: if request.auth != null
-        && request.resource.data.reports[request.auth.uid].value >= 0
-        && request.resource.data.reports[request.auth.uid].value <= 100
+        && request.resource.data.reports[request.auth.uid].value in [-2, -1, 1, 2]
         && request.resource.data.reports[request.auth.uid].weight >= 0
         && request.resource.data.reports[request.auth.uid].weight <= 1.0;
     }
